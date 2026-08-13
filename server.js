@@ -85,7 +85,7 @@ function persistDB() {
 async function initDB() {
     if (sqlDb) return;
     const initSqlJs = require('sql.js');
-    
+
     // Locate WASM file properly across different environments
     const wasmPath = path.join(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
     const wasmExists = fs.existsSync(wasmPath);
@@ -105,7 +105,7 @@ async function initDB() {
                 loaded = true;
                 console.log(`  ✅ Loaded existing database from ${p}`);
                 break;
-            } catch (e) {}
+            } catch (e) { }
         }
     }
 
