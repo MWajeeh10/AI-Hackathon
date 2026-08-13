@@ -1,0 +1,39 @@
+# Node modules (installed by npm install)
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Database (contains live user data — back up separately)
+orbit.db
+
+# JWT secret key — never commit this
+jwt_secret.key
+
+# Legacy flat-file db (kept for reference, not used in auth mode)
+# db.json
+.env.local
+.env.production
+
+# Database (contains live workspace data — back up separately)
+# Remove the next line if you want to commit the default db.json
+# db.json
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor artifacts
+.vscode/settings.json
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp files from atomic writes
+*.tmp

@@ -1,0 +1,155 @@
+{
+  "user": {
+    "name": "Alex Carter",
+    "email": "alex@example.com",
+    "loggedIn": true
+  },
+  "workspace": {
+    "name": "Alex Carter's Workspace",
+    "type": "solo",
+    "created": "2026-08-10"
+  },
+  "members": [
+    {
+      "id": "u-1",
+      "name": "Alex Carter",
+      "email": "alex@example.com",
+      "role": "solo_owner"
+    }
+  ],
+  "invitations": [],
+  "projects": [
+    {
+      "id": "p-1",
+      "name": "Website Rebranding",
+      "description": "Design and implement the new corporate branding online.",
+      "status": "active",
+      "start": "2026-08-01",
+      "due": "2026-08-20"
+    },
+    {
+      "id": "p-2",
+      "name": "Mobile Application",
+      "description": "Build the iOS/Android client portal.",
+      "status": "active",
+      "start": "2026-08-05",
+      "due": "2026-08-30"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t-1",
+      "projectId": "p-1",
+      "assignedTo": "u-2",
+      "title": "Design main branding illustrations",
+      "description": "Create pastel vector illustrations for the home page header area.",
+      "priority": "high",
+      "status": "in_progress",
+      "progress": 50,
+      "start": "2026-08-01",
+      "due": "2026-08-15"
+    },
+    {
+      "id": "t-2",
+      "projectId": "p-1",
+      "assignedTo": "u-3",
+      "title": "Write styleguide documentation",
+      "description": "Format color palettes, typography specs, and button classes.",
+      "priority": "low",
+      "status": "not_started",
+      "progress": 0,
+      "start": "2026-08-10",
+      "due": "2026-08-18"
+    },
+    {
+      "id": "t-3",
+      "projectId": "p-2",
+      "assignedTo": "u-2",
+      "title": "Setup API Integration layers",
+      "description": "Connect endpoint handlers to user session authentications.",
+      "priority": "medium",
+      "status": "in_progress",
+      "progress": 30,
+      "start": "2026-08-06",
+      "due": "2026-08-28"
+    },
+    {
+      "id": "t-4",
+      "projectId": "p-1",
+      "assignedTo": "u-1",
+      "title": "Deliver core logo vectors",
+      "description": "Export high-resolution variations for light/dark platforms.",
+      "priority": "high",
+      "status": "completed",
+      "progress": 100,
+      "start": "2026-08-01",
+      "due": "2026-08-10"
+    }
+  ],
+  "subtasks": [
+    {
+      "id": "s-1",
+      "taskId": "t-1",
+      "title": "Sketch layouts on paper",
+      "completed": true
+    },
+    {
+      "id": "s-2",
+      "taskId": "t-1",
+      "title": "Trace illustrations in vector tool",
+      "completed": false
+    }
+  ],
+  "comments": [
+    {
+      "id": "c-1",
+      "taskId": "t-1",
+      "userId": "u-2",
+      "body": "Illustrations are looking great, need copy refinement.",
+      "time": "2026-08-12T14:30:00Z"
+    }
+  ],
+  "activities": [
+    {
+      "id": "a-1",
+      "taskId": "t-1",
+      "userId": "u-2",
+      "action": "created",
+      "details": "created the task illustration asset.",
+      "time": "2026-08-10T10:00:00Z"
+    },
+    {
+      "id": "a-2",
+      "taskId": "t-1",
+      "userId": "u-2",
+      "action": "subtask_completed",
+      "details": "marked sketch layout completed.",
+      "time": "2026-08-11T12:00:00Z"
+    },
+    {
+      "id": "a-1786642144851",
+      "taskId": null,
+      "userId": "u-1",
+      "action": "update",
+      "details": "Invited 1223@example.com to join the workspace.",
+      "time": "2026-08-13T17:29:04.851Z"
+    },
+    {
+      "id": "a-1786643042857",
+      "taskId": null,
+      "userId": "u-1",
+      "action": "update",
+      "details": "Archived project \"Mobile Application\"",
+      "time": "2026-08-13T17:44:02.857Z"
+    },
+    {
+      "id": "a-1786643044200",
+      "taskId": null,
+      "userId": "u-1",
+      "action": "update",
+      "details": "Restored project \"Mobile Application\"",
+      "time": "2026-08-13T17:44:04.200Z"
+    }
+  ],
+  "_lastSaved": "2026-08-13T17:51:18.224Z"
+}

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Orbit — Internal work management platform for freelancers and small teams. Track projects, tasks, deadlines and team workload in one place.">
+    <meta name="author" content="Orbit Team">
+    <meta name="theme-color" content="#ff6b52">
+    <title>Orbit — Internal Workspace Platform</title>
+    <!-- Google Fonts: Outfit (modern, geometric, high-end) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Fluid Phase Selector Bar -->
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-dot"></div>
+            <span class="logo-text">orbit.</span>
+        </div>
+        
+        <nav class="phase-nav">
+            <button class="phase-btn active" data-phase="1">
+                <span class="phase-num">01</span>
+                <span class="phase-label">Onboarding</span>
+            </button>
+            <button class="phase-btn" data-phase="2">
+                <span class="phase-num">02</span>
+                <span class="phase-label">Team & Invites</span>
+            </button>
+            <button class="phase-btn" data-phase="3">
+                <span class="phase-num">03</span>
+                <span class="phase-label">Projects</span>
+            </button>
+            <button class="phase-btn" data-phase="4">
+                <span class="phase-num">04</span>
+                <span class="phase-label">Tasks & Subtasks</span>
+            </button>
+            <button class="phase-btn" data-phase="5">
+                <span class="phase-num">05</span>
+                <span class="phase-label">Health Rules</span>
+            </button>
+            <button class="phase-btn" data-phase="6">
+                <span class="phase-num">06</span>
+                <span class="phase-label">Dashboard</span>
+            </button>
+        </nav>
+
+        <div class="user-profile-badge">
+            <span class="workspace-indicator" id="current-ws-badge">Solo Mode</span>
+            <div class="avatar" id="header-avatar">S</div>
+            <button class="btn-logout" id="logout-btn" onclick="handleLogout()" title="Sign out">Sign Out</button>
+        </div>
+    </header>
+
+    <!-- Main Content Stage -->
+    <main class="app-stage">
+        
+        <!-- ==================== PHASE 1: ONBOARDING ==================== -->
+        <section id="view-phase-1" class="phase-view active">
+            <div class="onboarding-container">
+                <div class="intro-heading">
+                    <span class="badge-accent">Phase 01</span>
+                    <h1>Create your workspace</h1>
+                    <p>Start by registering your account and choosing your workspace configuration.</p>
+                </div>
+
+                <div class="onboarding-cards">
+                    <!-- Signup / Details Card -->
+                    <div class="minimal-card registration-card">
+                        <h2>Account details</h2>
+                        <form id="onboarding-form" class="bright-form">
+                            <div class="form-group">
+                                <label for="reg-name">Your Name</label>
+                                <input type="text" id="reg-name" placeholder="Alex Carter" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-email">Email Address</label>
+                                <input type="email" id="reg-email" placeholder="alex@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-pass">Password</label>
+                                <input type="password" id="reg-pass" placeholder="••••••••" required>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Type Selection Card -->
+                    <div class="minimal-card selection-card">
+                        <h2>Workspace Type</h2>
+                        <div class="workspace-options">
+                            <div class="ws-opt active" data-type="solo">
+                                <div class="ws-opt-icon">✦</div>
+                                <h3>Solo Freelancer</h3>
+                                <p>Manage your own independent projects, tasks, and client timelines. Zero teammates.</p>
+                                <span class="ws-capacity-tag">1 Member Limit</span>
+                            </div>
+                            <div class="ws-opt" data-type="team">
+                                <div class="ws-opt-icon">✦ ✦</div>
+                                <h3>Small Team</h3>
+                                <p>Collaborate with others. Invite team members and track tasks together.</p>
+                                <span class="ws-capacity-tag">2–5 Member Limit</span>
+                            </div>
+                        </div>
+                        <button type="submit" form="onboarding-form" class="btn btn-primary btn-full-width" id="btn-create-workspace">
+                            Launch Workspace
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PHASE 2: TEAM & INVITES ==================== -->
+        <section id="view-phase-2" class="phase-view">
+            <div class="view-header">
+                <div>
+                    <span class="badge-accent">Phase 02</span>
+                    <h1>Team & Memberships</h1>
+                    <p>Invite teammates and manage roles. Max limit is 5 people (including Team Head).</p>
+                </div>
+            </div>
+
+            <!-- Warning Alert for Solo workspaces -->
+            <div id="solo-warning-banner" class="alert-banner warning">
+                <strong>Notice:</strong> You are currently in a <strong>Solo Workspace</strong>. Team features are locked. To unlock them, switch workspace type to "Team" in Phase 1.
+            </div>
+
+            <div class="team-workspace-content" id="team-content-area">
+                <div class="grid-two-col">
+                    <!-- Left: Invitation Panel -->
+                    <div class="minimal-card">
+                        <h2>Invite Teammates</h2>
+                        <p class="card-subtitle">Sent invitations count towards the 5-member limit.</p>
+                        
+                        <form id="invite-form" class="bright-form">
+                            <div class="form-group inline-group">
+                                <input type="email" id="invite-email" placeholder="colleague@example.com" required>
+                                <button type="submit" class="btn btn-primary">Send Invitation</button>
+                            </div>
+                            <div id="invite-error-msg" class="error-text"></div>
+                        </form>
+
+                        <div class="capacity-gauge-box">
+                            <div class="gauge-header">
+                                <span>Workspace Occupancy</span>
+                                <span id="capacity-text">1 / 5 Members</span>
+                            </div>
+                            <div class="capacity-bar-bg">
+                                <div id="capacity-fill-bar" class="capacity-bar-fill" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Members & Invites List -->
+                    <div class="minimal-card">
+                        <h2>Active Roster & Invites</h2>
+                        
+                        <div class="roster-list" id="roster-container">
+                            <!-- Members injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Reassignment Modal / Overlay (Dynamic) -->
+            <div id="reassign-overlay" class="modal-overlay">
+                <div class="modal-content">
+                    <h2>Reassign Active Tasks</h2>
+                    <p>Before removing <strong id="departing-member-name">Member</strong>, you must handle their open tasks so work does not become orphaned.</p>
+                    
+                    <div id="reassign-task-list" class="reassign-scroller">
+                        <!-- Open tasks inject here -->
+                    </div>
+
+                    <div class="modal-actions">
+                        <button id="cancel-removal-btn" class="btn btn-secondary">Cancel Removal</button>
+                        <button id="confirm-removal-btn" class="btn btn-danger">Reassign & Remove</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PHASE 3: PROJECTS ==================== -->
+        <section id="view-phase-3" class="phase-view">
+            <div class="view-header">
+                <div>
+                    <span class="badge-accent">Phase 03</span>
+                    <h1>Projects Directory</h1>
+                    <p>Organize work into project containers. Add metadata and monitor timelines.</p>
+                </div>
+                <button class="btn btn-primary" id="open-new-project-modal">+ Create Project</button>
+            </div>
+
+            <!-- Create Project Modal -->
+            <div id="project-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <h2>New Project</h2>
+                    <form id="project-form" class="bright-form">
+                        <div class="form-group">
+                            <label for="proj-name">Project Name</label>
+                            <input type="text" id="proj-name" placeholder="E-commerce Website redesign" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="proj-desc">Description</label>
+                            <textarea id="proj-desc" placeholder="Revamp online store UI, optimize database queries, and improve checkout flow." rows="3"></textarea>
+                        </div>
+                        <div class="grid-two-col">
+                            <div class="form-group">
+                                <label for="proj-start">Start Date</label>
+                                <input type="date" id="proj-start">
+                            </div>
+                            <div class="form-group">
+                                <label for="proj-due">Due Date</label>
+                                <input type="date" id="proj-due">
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" id="close-project-modal" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Staggered Card Grid (Non-traditional layout) -->
+            <div class="projects-deck" id="projects-deck-container">
+                <!-- Project cards injected via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== PHASE 4: TASKS & SUBTASKS ==================== -->
+        <section id="view-phase-4" class="phase-view">
+            <div class="view-header">
+                <div>
+                    <span class="badge-accent">Phase 04</span>
+                    <h1>Tasks Canvas</h1>
+                    <p>Track tasks, build checklists (subtasks), and add comments within your active projects.</p>
+                </div>
+                <button class="btn btn-primary" id="open-new-task-modal">+ Add Task</button>
+            </div>
+
+            <!-- Task Modal -->
+            <div id="task-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <h2>Create Workspace Task</h2>
+                    <form id="task-form" class="bright-form">
+                        <div class="form-group">
+                            <label for="task-project">Project Associated</label>
+                            <select id="task-project" required>
+                                <!-- Projects populated here -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-title">Task Title</label>
+                            <input type="text" id="task-title" placeholder="Design custom checkout form" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-desc">Description</label>
+                            <textarea id="task-desc" placeholder="Details about this task step..."></textarea>
+                        </div>
+                        <div class="grid-three-col">
+                            <div class="form-group">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-assignee">Assignee</label>
+                                <select id="task-assignee">
+                                    <!-- Workspace members populated here -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-status">Status</label>
+                                <select id="task-status">
+                                    <option value="not_started">Not Started</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="in_review">In Review</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-two-col">
+                            <div class="form-group">
+                                <label for="task-start">Start Date</label>
+                                <input type="date" id="task-start">
+                            </div>
+                            <div class="form-group">
+                                <label for="task-due">Due Date</label>
+                                <input type="date" id="task-due">
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" id="close-task-modal" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Task Board Layout (Fluid Cards, Staggered Columns) -->
+            <div class="fluid-task-board">
+                <!-- Column: Not Started -->
+                <div class="board-column" id="col-not_started">
+                    <div class="column-header">
+                        <h3>Not Started</h3>
+                        <span class="counter" id="count-not_started">0</span>
+                    </div>
+                    <div class="task-cards-list" id="list-not_started"></div>
+                </div>
+
+                <!-- Column: In Progress -->
+                <div class="board-column" id="col-in_progress">
+                    <div class="column-header">
+                        <h3>In Progress</h3>
+                        <span class="counter" id="count-in_progress">0</span>
+                    </div>
+                    <div class="task-cards-list" id="list-in_progress"></div>
+                </div>
+
+                <!-- Column: In Review -->
+                <div class="board-column" id="col-in_review">
+                    <div class="column-header">
+                        <h3>In Review</h3>
+                        <span class="counter" id="count-in_review">0</span>
+                    </div>
+                    <div class="task-cards-list" id="list-in_review"></div>
+                </div>
+
+                <!-- Column: Completed -->
+                <div class="board-column" id="col-completed">
+                    <div class="column-header">
+                        <h3>Completed</h3>
+                        <span class="counter" id="count-completed">0</span>
+                    </div>
+                    <div class="task-cards-list" id="list-completed"></div>
+                </div>
+            </div>
+
+            <!-- Task Detail Side Panel Drawer (Slides out) -->
+            <div id="task-detail-drawer" class="detail-drawer">
+                <div class="drawer-header">
+                    <span id="detail-task-priority" class="badge-priority">Medium</span>
+                    <button class="close-drawer-btn" id="close-detail-drawer">×</button>
+                </div>
+                
+                <div class="drawer-body">
+                    <h2 id="detail-task-title">Task Title</h2>
+                    <p id="detail-task-desc" class="task-description-text">Task details are shown here.</p>
+                    
+                    <div class="task-metadata-list">
+                        <div class="meta-item">
+                            <span>Project:</span>
+                            <strong id="detail-task-project">Project Name</strong>
+                        </div>
+                        <div class="meta-item">
+                            <span>Assignee:</span>
+                            <strong id="detail-task-assignee">Unassigned</strong>
+                        </div>
+                        <div class="meta-item">
+                            <span>Status:</span>
+                            <select id="detail-change-status" class="minimal-select">
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="in_review">In Review</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="meta-item">
+                            <span>Timeline:</span>
+                            <span id="detail-task-dates">Aug 10 - Aug 15</span>
+                        </div>
+                    </div>
+
+                    <!-- Subtask Checklist Section (Phase 4 calculation engine) -->
+                    <div class="subtask-section">
+                        <div class="subtask-sec-header">
+                            <h3>Subtasks Checklist</h3>
+                            <span class="progress-pct" id="detail-progress-pct">0%</span>
+                        </div>
+                        
+                        <div class="subtask-progress-track">
+                            <div class="subtask-progress-bar" id="detail-progress-bar" style="width: 0%;"></div>
+                        </div>
+
+                        <!-- Info prompt for precedence rule -->
+                        <div class="precedence-note" id="detail-precedence-note">
+                            ℹ️ Subtasks exist. Progress is calculated automatically.
+                        </div>
+
+                        <div id="detail-manual-progress-box" class="manual-progress-box">
+                            <label for="detail-manual-progress-input">Progress Percentage</label>
+                            <div class="range-slider-container">
+                                <input type="range" id="detail-manual-progress-input" min="0" max="100" value="0">
+                                <span id="detail-manual-progress-value">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="subtask-list" id="detail-subtask-container">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <form id="new-subtask-form" class="inline-subtask-form">
+                            <input type="text" id="new-subtask-title" placeholder="+ Add a checklist item..." required>
+                        </form>
+                    </div>
+
+                    <!-- Task Comments Section -->
+                    <div class="comments-section">
+                        <h3>Collaboration & Logs</h3>
+                        
+                        <div class="comments-log-container" id="detail-comments-container">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <form id="task-comment-form" class="comment-input-area">
+                            <input type="text" id="task-comment-body" placeholder="Ask a question or log work..." required>
+                            <button type="submit" class="btn btn-secondary">Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PHASE 5: HEALTH RULES ENGINE ==================== -->
+        <section id="view-phase-5" class="phase-view">
+            <div class="view-header">
+                <div>
+                    <span class="badge-accent">Phase 05</span>
+                    <h1>Health Evaluation Sandbox</h1>
+                    <p>Observe how task health shifts dynamically between 🟢 On Track, 🟡 At Risk, and 🔴 Delayed based on dates and progress.</p>
+                </div>
+            </div>
+
+            <div class="grid-two-col">
+                <!-- Sandbox Controls -->
+                <div class="minimal-card">
+                    <h2>Control Room</h2>
+                    <p class="card-subtitle">Adjust dates and progress to see the health rule calculate in real time.</p>
+
+                    <div class="sandbox-controls bright-form">
+                        <div class="form-group">
+                            <label for="sb-task-name">Example Task Title</label>
+                            <input type="text" id="sb-task-name" value="Build Payments Module">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Timeline Config (Start / Due)</label>
+                            <div class="grid-two-col select-group">
+                                <div>
+                                    <span class="mini-label">Start Date</span>
+                                    <input type="date" id="sb-start-date">
+                                </div>
+                                <div>
+                                    <span class="mini-label">Due Date</span>
+                                    <input type="date" id="sb-due-date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sb-progress">Task Progress</label>
+                            <div class="range-slider-container">
+                                <input type="range" id="sb-progress" min="0" max="100" value="30">
+                                <span id="sb-progress-value" class="slider-display">30%</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group highlight-box">
+                            <label for="sb-current-date">System "Today" Date Simulator</label>
+                            <p class="card-subtitle">Drag to change system time relative to start/due dates.</p>
+                            <div class="range-slider-container">
+                                <input type="range" id="sb-current-date-slider" min="0" max="100" value="50">
+                                <span id="sb-current-date-value" class="slider-display">Aug 13, 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Output -->
+                <div class="minimal-card center-card flex-col-center">
+                    <h2>Calculated Health State</h2>
+                    
+                    <div class="health-gauge" id="sb-health-gauge">
+                        <div class="health-pulse"></div>
+                        <span id="sb-health-text">ON TRACK</span>
+                    </div>
+
+                    <div class="health-metrics-card">
+                        <div class="metric-row">
+                            <span>Elapsed Timeline:</span>
+                            <strong id="sb-elapsed-pct">0%</strong>
+                        </div>
+                        <div class="metric-row">
+                            <span>Current Progress:</span>
+                            <strong id="sb-current-prog-display">0%</strong>
+                        </div>
+                        <div class="metric-row">
+                            <span>Status:</span>
+                            <strong id="sb-margin-status">Ahead / Normal</strong>
+                        </div>
+                    </div>
+
+                    <div class="explanation-box" id="sb-explanation">
+                        <strong>Rule Explanation:</strong>
+                        <p id="sb-rule-text">Task is on track as time elapsed is low.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PHASE 6: SUMMARY DASHBOARD ==================== -->
+        <section id="view-phase-6" class="phase-view">
+            <div class="view-header">
+                <div>
+                    <span class="badge-accent">Phase 06</span>
+                    <h1 id="dashboard-welcome">Workspace Dashboard</h1>
+                    <p>A central control board highlighting urgent attention items, workload balance, and project health.</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Row -->
+            <div class="dashboard-stats-row">
+                <div class="stat-widget">
+                    <span class="widget-label">Total Active Tasks</span>
+                    <span class="widget-value" id="dash-stat-total">0</span>
+                </div>
+                <div class="stat-widget success">
+                    <span class="widget-label">Completed Tasks</span>
+                    <span class="widget-value" id="dash-stat-completed">0</span>
+                </div>
+                <div class="stat-widget warning">
+                    <span class="widget-label">At-Risk Items</span>
+                    <span class="widget-value" id="dash-stat-risk">0</span>
+                </div>
+                <div class="stat-widget danger">
+                    <span class="widget-label">Delayed Overdue</span>
+                    <span class="widget-value" id="dash-stat-delayed">0</span>
+                </div>
+            </div>
+
+            <div class="grid-three-col dashboard-grid">
+                
+                <!-- Col 1: Urgent "Needs Attention" Panel -->
+                <div class="minimal-card span-two">
+                    <h2>Needs Attention</h2>
+                    <p class="card-subtitle">Tasks classified as Delayed or At Risk requiring immediate focus.</p>
+                    
+                    <div class="attention-list" id="dash-attention-list">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Col 2: Task Workload Distribution -->
+                <div class="minimal-card">
+                    <h2>Team Capacity Allocation</h2>
+                    <p class="card-subtitle">Number of active tasks assigned per teammate.</p>
+                    
+                    <div class="workload-list" id="dash-workload-list">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Row 2 Col 1: Project Overviews -->
+                <div class="minimal-card span-two">
+                    <h2>Project Status Summary</h2>
+                    
+                    <div class="dashboard-project-scroller" id="dash-projects-list">
+                        <!-- Projects injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Row 2 Col 2: Recent Workspace Activity Logs -->
+                <div class="minimal-card">
+                    <h2>Activity Feed</h2>
+                    
+                    <div class="activity-feed" id="dash-activity-feed">
+                        <!-- Activity log items injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

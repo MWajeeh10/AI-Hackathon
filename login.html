@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to your Orbit workspace">
+    <title>Orbit — Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff6b52;
+            --accent-light: #ffeeeb;
+            --accent-dark: #e5503a;
+            --bg: #fbfbfc;
+            --surface: #ffffff;
+            --border: #eceef2;
+            --border-focus: #ff8a7a;
+            --text-primary: #12141a;
+            --text-secondary: #5e6475;
+            --text-tertiary: #9299a9;
+            --success: #10ac84;
+            --success-light: #e3faf2;
+            --danger: #ee5253;
+            --danger-light: #ffebeb;
+            --warning: #f1a93c;
+            --warning-light: #fef6e7;
+            --brand: linear-gradient(135deg, #ff7b62, #ff5277);
+            --shadow-sm: 0 2px 8px rgba(18,20,26,0.05);
+            --shadow-md: 0 10px 30px rgba(18,20,26,0.08);
+            --shadow-lg: 0 20px 60px rgba(18,20,26,0.12);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Decorative background blobs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::before {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 82, 0.08) 0%, transparent 70%);
+            top: -200px; right: -100px;
+        }
+        body::after {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(108, 92, 231, 0.06) 0%, transparent 70%);
+            bottom: -150px; left: -100px;
+        }
+
+        /* Auth card */
+        .auth-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 1.5rem;
+        }
+
+        /* Logo */
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .logo-dot {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: var(--brand);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.85; }
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        /* Card */
+        .auth-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* Tab switcher */
+        .tab-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+        .tab-btn {
+            padding: 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            transition: var(--transition);
+            position: relative;
+        }
+        .tab-btn.active {
+            color: var(--text-primary);
+            background: var(--surface);
+            font-weight: 600;
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0; right: 0;
+            height: 2px;
+            background: var(--brand);
+            border-radius: 2px 2px 0 0;
+        }
+        .tab-btn:hover:not(.active) { color: var(--text-secondary); }
+
+        /* Form area */
+        .auth-body {
+            padding: 2rem;
+        }
+
+        .auth-heading {
+            margin-bottom: 0.35rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .auth-subheading {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            margin-bottom: 1.75rem;
+            line-height: 1.5;
+        }
+
+        /* Form fields */
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background: var(--bg);
+            transition: var(--transition);
+            outline: none;
+            appearance: none;
+        }
+        .form-group input:focus {
+            border-color: var(--border-focus);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(255, 107, 82, 0.1);
+        }
+        .form-group input::placeholder { color: var(--text-tertiary); }
+        .form-group input.error-field { border-color: var(--danger); }
+
+        /* Password toggle */
+        .pw-toggle {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            font-size: 1rem;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .pw-toggle:hover { color: var(--text-primary); }
+        .form-group input[type="password"],
+        .form-group input.has-toggle { padding-right: 2.75rem; }
+
+        /* Password strength bar */
+        .strength-bar-wrap {
+            margin-top: 0.5rem;
+            height: 3px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        /* Workspace type selector */
+        .ws-type-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.6rem;
+        }
+        .ws-type-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1.1rem;
+        }
+        .ws-type-card {
+            position: relative;
+            cursor: pointer;
+        }
+        .ws-type-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .ws-type-card-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.85rem 0.5rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .ws-type-card input:checked + .ws-type-card-inner {
+            border-color: var(--accent);
+            background: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(255, 107, 82, 0.12);
+        }
+        .ws-type-card:hover .ws-type-card-inner {
+            border-color: var(--border-focus);
+            background: var(--surface);
+        }
+        .ws-type-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .ws-type-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .ws-type-desc {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            line-height: 1.3;
+        }
+        .strength-bar {
+            height: 100%;
+            border-radius: 99px;
+            width: 0%;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+        .strength-label {
+            font-size: 0.73rem;
+            color: var(--text-tertiary);
+            margin-top: 0.3rem;
+        }
+
+        /* Error/success messages */
+        .auth-message {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.5rem;
+            line-height: 1.4;
+        }
+        .auth-message.show { display: flex; }
+        .auth-message.error {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid rgba(238, 82, 83, 0.2);
+        }
+        .auth-message.success {
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid rgba(16, 172, 132, 0.2);
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(255, 107, 82, 0.35);
+        }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-submit .spinner {
+            display: none;
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-submit.loading .btn-text { display: none; }
+        .btn-submit.loading .spinner { display: block; }
+
+        /* Tab panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Footer link */
+        .auth-footer {
+            text-align: center;
+            padding: 1.25rem 2rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+        }
+        .auth-footer a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .auth-footer a:hover { text-decoration: underline; }
+
+        /* Terms note */
+        .terms-note {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Fade animation for panel switch */
+        .tab-panel {
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <!-- Logo -->
+        <div class="auth-logo">
+            <div class="logo-dot"></div>
+            <span class="logo-text">orbit.</span>
+        </div>
+
+        <div class="auth-card">
+            <!-- Tab Bar -->
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+                <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create Account</button>
+            </div>
+
+            <div class="auth-body">
+
+                <!-- ===== LOGIN PANEL ===== -->
+                <div class="tab-panel active" id="panel-login">
+                    <h1 class="auth-heading">Welcome back</h1>
+                    <p class="auth-subheading">Sign in to your Orbit workspace.</p>
+
+                    <div class="auth-message" id="login-msg"></div>
+
+                    <form id="login-form" novalidate>
+                        <div class="form-group">
+                            <label for="login-email">Email Address</label>
+                            <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="login-password" placeholder="••••••••" class="has-toggle" autocomplete="current-password" required>
+                                <button type="button" class="pw-toggle" onclick="togglePassword('login-password', this)" title="Show/hide password">👁</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit" id="login-btn">
+                            <span class="btn-text">Sign In</span>
+                            <span class="spinner"></span>
+                        </button>
+                    </form>
+
+                    <p class="terms-note">Your workspace data is stored locally and securely.</p>
+                </div>
+
+                <!-- ===== REGISTER PANEL ===== -->
+                <div class="tab-panel" id="panel-register">
+                    <h1 class="auth-heading">Create your account</h1>
+                    <p class="auth-subheading">Set up your Orbit workspace in seconds.</p>
+
+                    <div class="auth-message" id="register-msg"></div>
+
+                    <form id="register-form" novalidate>
+                        <div class="form-group">
+                            <label for="reg-name">Full Name</label>
+                            <input type="text" id="reg-name" placeholder="Alex Carter" autocomplete="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Email Address</label>
+                            <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+
+                        <!-- Workspace type question -->
+                        <div class="form-group">
+                            <span class="ws-type-label">How will you use Orbit?</span>
+                            <div class="ws-type-cards">
+                                <label class="ws-type-card">
+                                    <input type="radio" name="ws-type" value="solo" checked>
+                                    <div class="ws-type-card-inner">
+                                        <span class="ws-type-icon">🧑‍💻</span>
+                                        <span class="ws-type-name">Solo</span>
+                                        <span class="ws-type-desc">Just me, freelancing</span>
+                                    </div>
+                                </label>
+                                <label class="ws-type-card">
+                                    <input type="radio" name="ws-type" value="team">
+                                    <div class="ws-type-card-inner">
+                                        <span class="ws-type-icon">👥</span>
+                                        <span class="ws-type-name">Team</span>
+                                        <span class="ws-type-desc">2–5 people collaborating</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="reg-password" placeholder="Min. 6 characters" class="has-toggle" autocomplete="new-password" required oninput="checkStrength(this.value)">
+                                <button type="button" class="pw-toggle" onclick="togglePassword('reg-password', this)" title="Show/hide password">👁</button>
+                            </div>
+                            <div class="strength-bar-wrap">
+                                <div class="strength-bar" id="strength-bar"></div>
+                            </div>
+                            <div class="strength-label" id="strength-label"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-confirm">Confirm Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="reg-confirm" placeholder="Repeat your password" class="has-toggle" autocomplete="new-password" required>
+                                <button type="button" class="pw-toggle" onclick="togglePassword('reg-confirm', this)" title="Show/hide password">👁</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit" id="register-btn">
+                            <span class="btn-text">Create Workspace</span>
+                            <span class="spinner"></span>
+                        </button>
+                    </form>
+
+                    <p class="terms-note">By creating an account, your data is stored locally on this server.</p>
+                </div>
+
+            </div><!-- /auth-body -->
+
+            <div class="auth-footer">
+                <span id="footer-text">
+                    Don't have an account? <a onclick="switchTab('register')">Create one</a>
+                </span>
+            </div>
+        </div><!-- /auth-card -->
+    </div><!-- /auth-wrapper -->
+
+    <script>
+        // ─── Tab Switching ────────────────────────────────────────────────────────
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+
+            const footer = document.getElementById('footer-text');
+            if (tab === 'login') {
+                footer.innerHTML = "Don't have an account? <a onclick=\"switchTab('register')\">Create one</a>";
+            } else {
+                footer.innerHTML = "Already have an account? <a onclick=\"switchTab('login')\">Sign in</a>";
+            }
+
+            clearMessages();
+        }
+
+        function clearMessages() {
+            document.getElementById('login-msg').className = 'auth-message';
+            document.getElementById('register-msg').className = 'auth-message';
+        }
+
+        // ─── Show message in panel ────────────────────────────────────────────────
+        function showMessage(id, text, type) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = `auth-message ${type} show`;
+        }
+
+        // ─── Password visibility toggle ───────────────────────────────────────────
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        // ─── Password strength indicator ─────────────────────────────────────────
+        function checkStrength(password) {
+            const bar = document.getElementById('strength-bar');
+            const label = document.getElementById('strength-label');
+            let score = 0;
+            if (password.length >= 6) score++;
+            if (password.length >= 10) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            const levels = [
+                { width: '0%', color: 'transparent', text: '' },
+                { width: '20%', color: '#ee5253', text: 'Very weak' },
+                { width: '40%', color: '#f1a93c', text: 'Weak' },
+                { width: '60%', color: '#fdcb6e', text: 'Fair' },
+                { width: '80%', color: '#00b894', text: 'Good' },
+                { width: '100%', color: '#10ac84', text: 'Strong' }
+            ];
+            const level = levels[Math.min(score, 5)];
+            bar.style.width = level.width;
+            bar.style.background = level.color;
+            label.textContent = level.text;
+        }
+
+        // ─── Set button loading state ─────────────────────────────────────────────
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            btn.disabled = loading;
+            btn.classList.toggle('loading', loading);
+        }
+
+        // ─── API call helper ──────────────────────────────────────────────────────
+        async function apiPost(url, body) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            return { ok: res.ok, status: res.status, data };
+        }
+
+        // ─── Login Form ───────────────────────────────────────────────────────────
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                return showMessage('login-msg', 'Please fill in all fields.', 'error');
+            }
+
+            setLoading('login-btn', true);
+            try {
+                const { ok, data } = await apiPost('/api/auth/login', { email, password });
+                if (ok) {
+                    localStorage.setItem('orbit_token', data.token);
+                    localStorage.setItem('orbit_user', JSON.stringify(data.user));
+                    showMessage('login-msg', 'Signing in…', 'success');
+                    // Redirect with a flag so app.js knows to skip Phase 1
+                    setTimeout(() => { window.location.href = '/?from=login'; }, 500);
+                } else {
+                    showMessage('login-msg', data.message || 'Login failed. Please try again.', 'error');
+                }
+            } catch (err) {
+                showMessage('login-msg', 'Could not connect to server. Make sure the server is running.', 'error');
+            }
+            setLoading('login-btn', false);
+        });
+
+        // ─── Register Form ────────────────────────────────────────────────────────
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            const workspaceType = document.querySelector('input[name="ws-type"]:checked').value;
+
+            if (!name || !email || !password || !confirm) {
+                return showMessage('register-msg', 'Please fill in all fields.', 'error');
+            }
+            if (password !== confirm) {
+                return showMessage('register-msg', 'Passwords do not match.', 'error');
+            }
+            if (password.length < 6) {
+                return showMessage('register-msg', 'Password must be at least 6 characters.', 'error');
+            }
+
+            setLoading('register-btn', true);
+            try {
+                const { ok, data } = await apiPost('/api/auth/register', { name, email, password, workspaceType });
+                if (ok) {
+                    localStorage.setItem('orbit_token', data.token);
+                    localStorage.setItem('orbit_user', JSON.stringify(data.user));
+                    showMessage('register-msg', 'Account created! Loading your workspace…', 'success');
+                    // Redirect with flag — app.js will route to correct phase based on workspace type
+                    setTimeout(() => { window.location.href = '/?from=register'; }, 700);
+                } else {
+                    showMessage('register-msg', data.message || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (err) {
+                showMessage('register-msg', 'Could not connect to server. Make sure the server is running.', 'error');
+            }
+            setLoading('register-btn', false);
+        });
+
+        // ─── Auto-redirect if already logged in ───────────────────────────────────
+        (function checkAlreadyLoggedIn() {
+            const token = localStorage.getItem('orbit_token');
+            if (!token) return;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.exp && payload.exp * 1000 > Date.now()) {
+                    window.location.href = '/';
+                }
+            } catch (_) {
+                localStorage.removeItem('orbit_token');
+            }
+        })();
+    </script>
+</body>
+</html>
