@@ -28,21 +28,30 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
+const os = require('os');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DB_PATH = path.join(__dirname, 'orbit.db');
+let DB_PATH = path.join(__dirname, 'orbit.db');
 const SECRET_FILE = path.join(__dirname, 'jwt_secret.key');
 
 /* --------------------------------------------------------------------------
-   JWT Secret — auto-generated on first run, persisted to jwt_secret.key
+   JWT Secret — auto-generated on first run or read from env/file
 -------------------------------------------------------------------------- */
-let JWT_SECRET;
-if (fs.existsSync(SECRET_FILE)) {
-    JWT_SECRET = fs.readFileSync(SECRET_FILE, 'utf8').trim();
-} else {
-    JWT_SECRET = crypto.randomBytes(64).toString('hex');
-    fs.writeFileSync(SECRET_FILE, JWT_SECRET, 'utf8');
-    console.log('  🔑 Generated new JWT secret key → jwt_secret.key');
+let JWT_SECRET = process.env.JWT_SECRET || 'orbit-secret-key-fallback-2026';
+try {
+    if (fs.existsSync(SECRET_FILE)) {
+        JWT_SECRET = fs.readFileSync(SECRET_FILE, 'utf8').trim();
+    } else {
+        try {
+            fs.writeFileSync(SECRET_FILE, JWT_SECRET, 'utf8');
+            console.log('  🔑 Generated new JWT secret key → jwt_secret.key');
+        } catch (e) {
+            // Read-only filesystem in serverless environments
+        }
+    }
+} catch (e) {
+    // Fallback if filesystem check fails
 }
 const JWT_EXPIRES_IN = '7d';
 
@@ -51,27 +60,58 @@ const JWT_EXPIRES_IN = '7d';
 -------------------------------------------------------------------------- */
 let SQL; // sql.js instance
 let sqlDb; // in-memory database
+let dbInitialized = false;
+let dbInitPromise = null;
 
 // Persist database to disk after every write
 function persistDB() {
-    const data = sqlDb.export();
-    fs.writeFileSync(DB_PATH, Buffer.from(data));
+    if (!sqlDb) return;
+    try {
+        const data = sqlDb.export();
+        fs.writeFileSync(DB_PATH, Buffer.from(data));
+    } catch (err) {
+        try {
+            const tmpPath = path.join(os.tmpdir(), 'orbit.db');
+            const data = sqlDb.export();
+            fs.writeFileSync(tmpPath, Buffer.from(data));
+            DB_PATH = tmpPath;
+        } catch (tmpErr) {
+            console.warn('Could not persist database to disk:', err.message);
+        }
+    }
 }
 
 // Initialize the database (async because sql.js loads a WASM module)
 async function initDB() {
+    if (sqlDb) return;
     const initSqlJs = require('sql.js');
-    SQL = await initSqlJs();
+    
+    // Locate WASM file properly across different environments
+    const wasmPath = path.join(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
+    const wasmExists = fs.existsSync(wasmPath);
 
-    if (fs.existsSync(DB_PATH)) {
-        // Load existing database from disk
-        const fileBuffer = fs.readFileSync(DB_PATH);
-        sqlDb = new SQL.Database(fileBuffer);
-        console.log('  ✅ Loaded existing database from orbit.db');
-    } else {
-        // Create fresh database
+    SQL = await initSqlJs(wasmExists ? {
+        locateFile: () => wasmPath
+    } : undefined);
+
+    let loaded = false;
+    const possiblePaths = [DB_PATH, path.join(os.tmpdir(), 'orbit.db')];
+    for (const p of possiblePaths) {
+        if (fs.existsSync(p)) {
+            try {
+                const fileBuffer = fs.readFileSync(p);
+                sqlDb = new SQL.Database(fileBuffer);
+                DB_PATH = p;
+                loaded = true;
+                console.log(`  ✅ Loaded existing database from ${p}`);
+                break;
+            } catch (e) {}
+        }
+    }
+
+    if (!loaded) {
         sqlDb = new SQL.Database();
-        console.log('  🗄️  Created new SQLite database → orbit.db');
+        console.log('  🗄️  Created new SQLite database in memory');
     }
 
     // Create tables
@@ -92,6 +132,23 @@ async function initDB() {
     `);
     persistDB();
 }
+
+// Ensure DB is initialized for every incoming serverless request
+app.use(async (req, res, next) => {
+    if (!dbInitialized) {
+        if (!dbInitPromise) {
+            dbInitPromise = initDB().then(() => { dbInitialized = true; });
+        }
+        try {
+            await dbInitPromise;
+        } catch (err) {
+            console.error('Failed to initialize database:', err);
+            return res.status(500).json({ error: 'DatabaseInitError', message: err.message });
+        }
+    }
+    next();
+});
+
 
 // Helper: run a SELECT and return all rows as array of objects
 function dbAll(sql, params = []) {
