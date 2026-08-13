@@ -450,9 +450,20 @@ app.use(express.static(__dirname, {
     maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0
 }));
 
+app.get('/style.css', (req, res) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.sendFile(path.join(__dirname, 'style.css'));
+});
+
+app.get('/app.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'app.js'));
+});
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+
 
 /* --------------------------------------------------------------------------
    Error Handler

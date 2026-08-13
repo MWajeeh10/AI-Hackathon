@@ -5,7 +5,16 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["node_modules/sql.js/dist/sql-wasm.wasm", "orbit.db", "jwt_secret.key"]
+        "includeFiles": [
+          "index.html",
+          "login.html",
+          "style.css",
+          "app.js",
+          "db.json",
+          "orbit.db",
+          "jwt_secret.key",
+          "node_modules/sql.js/dist/sql-wasm.wasm"
+        ]
       }
     }
   ],
